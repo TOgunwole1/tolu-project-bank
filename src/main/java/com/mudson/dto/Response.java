@@ -15,5 +15,4 @@ public class Response {
     private String responseMessage;
     private AccountInfo accountInfo;
 
-
 }

@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class UserRequests {
 
     private String firstName;

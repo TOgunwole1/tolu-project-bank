@@ -31,54 +31,55 @@ public class UserServiceImp implements Userservice {
                 userRepo.existsByAddress(userrequest.getAddress()) ||
                 userRepo.existsByPhone(userrequest.getPhone())) {
 
-            return Response.builder()
-                    .responseCode(AccountUtil.EXISTS_CODE)
-                    .responseMessage(AccountUtil.EXISTS_MESSAGE)
-                    .accountInfo(null)
-                    .build();
+            Response resp = new Response();
+            resp.setResponseCode(AccountUtil.EXISTS_CODE);
+            resp.setResponseMessage(AccountUtil.EXISTS_MESSAGE);
+            resp.setAccountInfo(null);
+            return resp;
         }
 
         /*
          * Create a new user account and save it to the database.
          */
-        User newUser = User.builder()
-                .firstName(userrequest.getFirstName())
-                .lastName(userrequest.getLastName())
-                .otherName(userrequest.getOtherName())
-                .gender(userrequest.getGender())
-                .id(userrequest.getId())
-                .phone(userrequest.getPhone())
-                .email(userrequest.getEmail())
-                .alternatePhone(userrequest.getAlternatePhone())
-                .address(userrequest.getAddress())
-                .balance(BigDecimal.ZERO)  // Default balance
-                .accountNumber(AccountUtil.generateAccNum())  // Generate account number
-                .build();
+        User newUser = new User();
+        newUser.setFirstName(userrequest.getFirstName());
+        newUser.setLastName(userrequest.getLastName());
+        newUser.setOtherName(userrequest.getOtherName());
+        newUser.setGender(userrequest.getGender());
+        newUser.setId(userrequest.getId());
+        newUser.setPhone(userrequest.getPhone());
+        newUser.setEmail(userrequest.getEmail());
+        newUser.setAlternatePhone(userrequest.getAlternatePhone());
+        newUser.setAddress(userrequest.getAddress());
+        newUser.setBalance(BigDecimal.ZERO); // Default balance
+        newUser.setAccountNumber(AccountUtil.generateAccNum());
 
         User savedUser = userRepo.save(newUser);  // Save the new user to the database
 
         //Send email Alerts
-        EmailDetails emailDetails = EmailDetails.builder()
-                .recipient(savedUser.getEmail())
-                .subject("ACCOUNT CREATION")
-                .body("Account created successfully,\n" +
-                        "Account Details:\n" +
-                        "Account Name: " + savedUser.getFirstName() + " " + savedUser.getLastName() + "\n" +
-                        "Account Email: " + savedUser.getEmail() + "\n" +
-                        "Account Phone: " + savedUser.getPhone() + "\n" +
-                        "Account Number: " + savedUser.getAccountNumber() + "\n" +
-                        "Creation Time: " + savedUser.getCreatedAt())
-                .build();
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setRecipient(savedUser.getEmail());
+        emailDetails.setSubject("ACCOUNT CREATION");
+        StringBuilder body = new StringBuilder();
+        body.append("Account created successfully,\n");
+        body.append("Account Details:\n");
+        body.append("Account Name: ").append(savedUser.getFirstName()).append(" ").append(savedUser.getLastName()).append("\n");
+        body.append("Account Email: ").append(savedUser.getEmail()).append("\n");
+        body.append("Account Phone: ").append(savedUser.getPhone()).append("\n");
+        body.append("Account Number: ").append(savedUser.getAccountNumber()).append("\n");
+        body.append("Creation Time: ").append(savedUser.getCreatedAt());
+        emailDetails.setBody(body.toString());
         emailServices.sendEmailAlerts(emailDetails);
 
-        return Response.builder()
-                .responseCode(AccountUtil.ACC_CREATED_CODE)
-                .responseMessage(AccountUtil.ACC_CREATED_MSG)
-                .accountInfo(AccountInfo.builder()
-                        .balance(savedUser.getBalance())
-                        .accountNumber(savedUser.getAccountNumber())
-                        .accountName(savedUser.getFirstName() + " " + savedUser.getLastName())
-                        .build())
-                .build();
+        AccountInfo accInfo = new AccountInfo();
+        accInfo.setBalance(savedUser.getBalance());
+        accInfo.setAccountNumber(savedUser.getAccountNumber());
+        accInfo.setAccountName(savedUser.getFirstName() + " " + savedUser.getLastName());
+
+        Response resp = new Response();
+        resp.setResponseCode(AccountUtil.ACC_CREATED_CODE);
+        resp.setResponseMessage(AccountUtil.ACC_CREATED_MSG);
+        resp.setAccountInfo(accInfo);
+        return resp;
     }
 }

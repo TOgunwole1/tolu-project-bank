@@ -16,10 +16,6 @@
 
     <properties>
         <java.version>17</java.version> <!-- Use a compatible Java version -->
-        <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="jakarta.persistence.jdbc.url" value="root"/>
-        <property name="jakarta.persistence.jdbc.user" value="tolu-project-bank"/>
-        <property name="jakarta.persistence.jdbc.password" value="Toluwalase123"/>
     </properties>
 
     <dependencies>
@@ -44,12 +40,11 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Lombok (explicit version and provided scope) -->
+        <!-- Lombok (explicit version) - available on compile classpath to help IDE/indexer; remove scope to default to compile -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Spring Boot Starter for Testing -->
@@ -101,6 +96,50 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+
+            <!-- Dependency plugin: resolve, list, and copy runtime dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <!-- Resolve dependencies during validate phase -->
+                    <execution>
+                        <id>resolve-dependencies</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Produce a dependency list file for runtime scope -->
+                    <execution>
+                        <id>list-dependencies</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>list</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>${project.build.directory}/dependency-list.txt</outputFile>
+                            <includeScope>runtime</includeScope>
+                            <outputAbsoluteArtifactFilename>true</outputAbsoluteArtifactFilename>
+                        </configuration>
+                    </execution>
+
+                    <!-- Copy runtime dependencies into target/lib during package -->
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Spring Boot Maven Plugin -->
