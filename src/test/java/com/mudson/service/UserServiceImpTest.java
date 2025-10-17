@@ -24,20 +24,8 @@ class UserServiceImpTest {
     void setup() {
         userRepo = mock(UserRepo.class);
         emailServices = mock(EmailServices.class);
-        userService = new UserServiceImp();
-        // inject mocks via reflection or setter if available
-        // use reflection to set private fields
-        try {
-            java.lang.reflect.Field repoField = UserServiceImp.class.getDeclaredField("userRepo");
-            repoField.setAccessible(true);
-            repoField.set(userService, userRepo);
-
-            java.lang.reflect.Field emailField = UserServiceImp.class.getDeclaredField("emailServices");
-            emailField.setAccessible(true);
-            emailField.set(userService, emailServices);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        // Use constructor injection (matches the implementation)
+        userService = new UserServiceImp(userRepo, emailServices);
     }
 
     @Test
