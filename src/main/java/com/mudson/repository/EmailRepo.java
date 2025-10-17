@@ -23,16 +23,32 @@ public class EmailRepo implements EmailServices {
 
         // If there's no mail sender configured, skip sending during tests or in environments
         if (mailSender == null) {
-            System.out.println("Mail sender not configured - skipping email send (recipient=" + emailDetails.getRecipient() + ")");
+            String recipient = (emailDetails != null) ? emailDetails.getRecipient() : null;
+            System.out.println("Mail sender not configured - skipping email send (recipient=" + recipient + ")");
+            return;
+        }
+
+        // Defensive null checks for emailDetails and required fields
+        if (emailDetails == null) {
+            System.err.println("EmailDetails is null - nothing to send");
+            return;
+        }
+
+        String recipient = emailDetails.getRecipient();
+        if (recipient == null || recipient.trim().isEmpty()) {
+            System.err.println("Recipient is null or empty - skipping email send");
             return;
         }
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(senderEmail);
-            message.setTo(emailDetails.getRecipient());
-            message.setSubject(emailDetails.getSubject());
-            message.setText(emailDetails.getBody());
+            // Only set from if configured
+            if (senderEmail != null && !senderEmail.trim().isEmpty()) {
+                message.setFrom(senderEmail);
+            }
+            message.setTo(recipient);
+            if (emailDetails.getSubject() != null) message.setSubject(emailDetails.getSubject());
+            if (emailDetails.getBody() != null) message.setText(emailDetails.getBody());
             mailSender.send(message);
 
             System.out.println("Email sent successfully");

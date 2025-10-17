@@ -16,11 +16,16 @@ import java.math.BigDecimal;
 @Service  // Placed above the class definition
 public class UserServiceImp implements Userservice {
 
-    @Autowired
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
-    @Autowired
-    EmailServices emailServices;
+    // Email service is optional at runtime (tests may provide a mock). Make it nullable.
+    private final EmailServices emailServices;
+
+    // Use constructor injection for clarity and testability
+    public UserServiceImp(@Autowired UserRepo userRepo, @Autowired(required = false) EmailServices emailServices) {
+        this.userRepo = userRepo;
+        this.emailServices = emailServices;
+    }
 
     @Override
     public Response createAccount(UserRequests userrequest) {
@@ -69,7 +74,12 @@ public class UserServiceImp implements Userservice {
         body.append("Account Number: ").append(savedUser.getAccountNumber()).append("\n");
         body.append("Creation Time: ").append(savedUser.getCreatedAt());
         emailDetails.setBody(body.toString());
-        emailServices.sendEmailAlerts(emailDetails);
+        // Guard against missing email service to avoid NullPointerException
+        if (emailServices != null) {
+            emailServices.sendEmailAlerts(emailDetails);
+        } else {
+            System.out.println("Email service not available - skipped sending email to " + savedUser.getEmail());
+        }
 
         AccountInfo accInfo = new AccountInfo();
         accInfo.setBalance(savedUser.getBalance());
