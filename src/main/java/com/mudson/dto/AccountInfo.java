@@ -15,6 +15,6 @@ import java.math.BigDecimal;
 public class AccountInfo {
 
     private String accountName;
-    private BigDecimal Balance;
-    private String AccountNumber;
+    private BigDecimal balance;
+    private String accountNumber;
 }

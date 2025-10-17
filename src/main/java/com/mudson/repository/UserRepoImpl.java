@@ -108,7 +108,8 @@ public class UserRepoImpl implements UserRepo {
     @Override
     @Deprecated
     public User getOne(Long aLong) {
-        return entityManager.find(User.class, aLong);
+        // Keep behavior consistent with previous implementation by delegating to getById.
+        return getById(aLong);
     }
 
     @Override

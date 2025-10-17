@@ -4,10 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
+import jakarta.persistence.Id;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,24 +15,21 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @NoArgsConstructor
-@Entity
-@Builder
 @AllArgsConstructor
+@Builder
+@Entity
 @Table(name = "users")
-@SpringBootApplication(scanBasePackages = "com.mudson.entity")
-
 public class User {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String firstName;
 
     private String lastName;
 
     private String otherName;
-
-    private Long Id;
 
     private String email;
 
@@ -48,12 +45,9 @@ public class User {
 
     private BigDecimal balance;
 
-    public String getFirstName() {
-        return firstName;
-    }
-
     @CreationTimestamp
     private LocalDateTime createdAt;
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

@@ -20,7 +20,7 @@ public class UserRequests {
 
     private String otherName;
 
-    private Long Id;
+    private Long id;
 
     private String email;
 
