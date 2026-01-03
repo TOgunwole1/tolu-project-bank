@@ -31,12 +31,12 @@ class UserServiceImpTest {
     @Test
     void createAccount_happyPath_savesAndSendsEmail() {
         UserRequests req = UserRequests.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .email("john@example.com")
-                .phone("1234567890")
-                .address("123 Main St")
-                .build();
+            .firstName("John")
+            .lastName("Doe")
+            .email("john@example.com")
+            .phone("1234567890")
+            .address("123 Main St")
+            .build();
 
         when(userRepo.existsByEmail(anyString())).thenReturn(false);
         when(userRepo.existsByPhone(anyString())).thenReturn(false);
