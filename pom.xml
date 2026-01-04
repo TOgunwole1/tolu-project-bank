@@ -48,11 +48,6 @@
             <version>9.37.3</version>
         </dependency>
 
-        <!-- Spring Boot Starter for Servlet API (for Filters) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
 
         <!-- Lombok (explicit version) - available on compile classpath to help IDE/indexer; remove scope to default to compile -->
         <dependency>
