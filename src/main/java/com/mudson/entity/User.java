@@ -11,6 +11,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.OneToOne;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -18,6 +20,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne(mappedBy = "user")
+    private Login login;
 
     private String firstName;
     private String lastName;
@@ -76,4 +81,6 @@ public class User {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public Login getLogin() { return login; }
+    public void setLogin(Login login) { this.login = login; }
 }
